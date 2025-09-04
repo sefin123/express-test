@@ -8,8 +8,10 @@
   },
   "dependencies": {
     "@prisma/client": "^6.15.0",
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.1",
+    "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "prisma": "^6.15.0",
@@ -17,7 +19,6 @@
     "typescript": "^5.9.2"
   },
   "description": "",
-  "devDependencies": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
