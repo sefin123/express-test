@@ -58,4 +58,8 @@ export class UserRepository {
       data: { is_active: user.isActive },
     });
   }
+
+  countActiveAdmins(): Promise<number> {
+    return prisma.user.count({ where: { role: "admin", is_active: true } });
+  }
 }

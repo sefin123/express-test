@@ -45,6 +45,15 @@ export class UserService {
 
   async changeRoleById(user: ChangeRoleById) {
     try {
+      const foundedUser = await this.userRepository.getUserById({
+        id: user.id,
+      });
+      if (!foundedUser) throw new Error("UserNotFound");
+
+      if (foundedUser.role === "admin" && user.role === "user") {
+        const admins = await this.userRepository.countActiveAdmins();
+        if (admins <= 1) throw new Error("LastActiveAdmin");
+      }
       const changedUser = await this.userRepository.changeRoleById(user);
       return changedUser;
     } catch (err) {
