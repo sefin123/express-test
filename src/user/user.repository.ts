@@ -1,8 +1,12 @@
 import { Prisma, PrismaClient, User } from "@prisma/client";
-import { ChangeRoleById, DeleteUserById, GetUserById } from "./user.types";
+import {
+  ChangeRoleById,
+  DeleteUserById,
+  GetUserById,
+  PostUser,
+  setActive,
+} from "./user.types";
 const prisma = new PrismaClient();
-
-type CreateUserInput = Prisma.UserCreateInput;
 
 export class UserRepository {
   getAllUsers(): Promise<User[]> {
@@ -17,11 +21,11 @@ export class UserRepository {
     });
   }
 
-  createUser(user: CreateUserInput): Promise<User> {
+  createUser(user: PostUser): Promise<User> {
     return prisma.user.create({
       data: {
-        full_name: user.full_name,
-        birth_date: user.birth_date,
+        full_name: user.fullName,
+        birth_date: user.birthDate,
         email: user.email,
         password: user.password,
         role: user.role,
@@ -41,6 +45,17 @@ export class UserRepository {
     return prisma.user.update({
       where: { id: user.id },
       data: { role: user.role },
+    });
+  }
+
+  findUserByEmail(email: string): Promise<User | null> {
+    return prisma.user.findUnique({ where: { email } });
+  }
+
+  setActive(user: setActive): Promise<User> {
+    return prisma.user.update({
+      where: { id: user.id },
+      data: { is_active: user.isActive },
     });
   }
 }

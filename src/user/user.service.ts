@@ -10,7 +10,7 @@ import {
 import { hashPassword } from "../utils/password";
 
 export class UserService {
-  private userRepository = new UserRepository();
+  private readonly userRepository = new UserRepository();
 
   async getUsers(): Promise<User[] | string> {
     return await this.userRepository.getAllUsers();
@@ -27,20 +27,7 @@ export class UserService {
   }
 
   async postUser(user: PostUser): Promise<User> {
-    const passwordHash = await hashPassword(user.password);
-
-    const total = await this.userRepository.countUsers();
-    let role: UserRole = total === 0 ? "admin" : "user";
-
-    const userData = {
-      full_name: user.fullName,
-      birth_date: new Date(user.birthDate), // преобразуем строку в Date
-      email: user.email,
-      password: passwordHash,
-      role: role,
-    };
-
-    const createdUser = await this.userRepository.createUser(userData);
+    const createdUser = await this.userRepository.createUser(user);
 
     if (!createdUser) {
       throw new Error("User creation failed");
@@ -65,5 +52,12 @@ export class UserService {
     } catch (err) {
       throw new Error("User not found");
     }
+  }
+
+  async blockOrUnblockById(id: number): Promise<User> {
+    const exists = await this.userRepository.getUserById({ id });
+    if (!exists) throw new Error("UserNotFound");
+
+    return this.userRepository.setActive({ id, isActive: !exists.is_active });
   }
 }

@@ -7,7 +7,7 @@ export interface GetUserById {
 
 export interface PostUser {
   fullName: string;
-  birthDate: string; // ISO-строка
+  birthDate: Date;
   email: string;
   password: string;
   role: UserRole;
@@ -20,4 +20,13 @@ export interface ChangeRoleById {
 
 export interface DeleteUserById {
   id: number;
+}
+
+export interface findUserByEmail {
+  email: string;
+}
+
+export interface setActive {
+  id: number;
+  isActive: boolean;
 }
