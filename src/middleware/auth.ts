@@ -1,8 +1,15 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
+import { UserRole } from "@/user/user.types";
 
 dotenv.config();
+
+type TokenPayload = JwtPayload & {
+  id: number;
+  role: UserRole;
+  isActive: boolean;
+};
 
 export function authMiddleware(
   req: Request,
@@ -18,9 +25,20 @@ export function authMiddleware(
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    (req as any).user = decoded;
-    next();
-  } catch (err) {
+
+    if (typeof decoded === "string" || decoded == null) {
+      res.status(401).json({ error: "Invalid token payload" });
+    }
+
+    const payload = decoded as TokenPayload;
+
+    if (!payload.isActive) {
+      res.status(403).json({ error: "User inactive" });
+    }
+
+    (req as any).user = { id: payload.id, role: payload.role };
+    return next();
+  } catch {
     res.status(401).json({ error: "Invalid or expired token" });
   }
 }

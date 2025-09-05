@@ -20,7 +20,11 @@ export class AuthService {
 
     if (!user.is_active) throw new Error("User inactive");
 
-    const token = signJwt({ id: user.id, role: user.role });
+    const token = signJwt({
+      id: user.id,
+      role: user.role,
+      isActive: user.is_active,
+    });
 
     return { token, user };
   }

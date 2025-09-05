@@ -26,9 +26,9 @@ router.post("/login", async (req: Request, res: Response) => {
       .json({ message: "Login successful", name: user.full_name });
   } catch (e: any) {
     if (e.message === "Invalid credentials")
-      return res.status(401).json({ error: "Invalid credentials" });
+      res.status(401).json({ error: "Invalid credentials" });
     if (e.message === "User inactive")
-      return res.status(403).json({ error: "User is inactive" });
+      res.status(403).json({ error: "User is inactive" });
   }
 });
 
@@ -43,6 +43,12 @@ router.post("/register", async (req: Request, res: Response) => {
 });
 
 router.post("/logout", (req: Request, res: Response) => {
+  const token = req.cookies?.token;
+
+  if (!token) {
+    res.status(401).json({ error: "Token missing in cookie" });
+  }
+
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

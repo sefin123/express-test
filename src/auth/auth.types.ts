@@ -8,6 +8,7 @@ export interface Login {
 export interface JwtUser {
   id: number;
   role: UserRole;
+  isActive: boolean;
 }
 
 export interface Register {

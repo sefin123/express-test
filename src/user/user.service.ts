@@ -5,9 +5,7 @@ import {
   DeleteUserById,
   GetUserById,
   PostUser,
-  UserRole,
 } from "./user.types";
-import { hashPassword } from "../utils/password";
 
 export class UserService {
   private readonly userRepository = new UserRepository();
